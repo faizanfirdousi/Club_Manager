@@ -1,5 +1,3 @@
-# Club_Events_Manager
-
 College Clubs & Events Management Platform
 
 Description:
