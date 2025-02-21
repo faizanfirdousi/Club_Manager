@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY, // Change this to import.meta.env
   authDomain: "kaizen-auth-20ca9.firebaseapp.com",
   projectId: "kaizen-auth-20ca9",
-  storageBucket: "kaizen-auth-20ca9.firebasestorage.app",
+  storageBucket: "kaizen-auth-20ca9.appspot.com", // Fix the storage bucket URL
   messagingSenderId: "724742138483",
   appId: "1:724742138483:web:ef0e6d2696d5ef1cd89806",
 };

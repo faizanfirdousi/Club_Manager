@@ -10,39 +10,33 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Team from "./pages/Team";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import TestToken from "./pages/TestToken";
 
-// Move ProtectedRoute outside of App component
+// Protected Route Component
 const ProtectedRoute = () => {
   const { currentUser } = useAuth();
-
-  if (!currentUser) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <Dashboard />;
+  return currentUser ? <Dashboard /> : <Navigate to="/login" replace />;
 };
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
+          <Route exact path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
-
-          {/* Protected Dashboard Routes */}
           <Route path="/dashboard/*" element={<ProtectedRoute />} />
-          <Route path="/test-token" element={<TestToken />} />
+          {/* Catch all route - redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 

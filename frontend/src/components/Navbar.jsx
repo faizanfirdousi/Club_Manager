@@ -1,35 +1,62 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Update the navigation items array to match exact routes from App.jsx
+  const navigationItems = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+    { name: "Team", path: "/team" },
+  ];
+
   return (
-    <nav className="bg-transparent">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled || isMenuOpen
+          ? "bg-gray-900/95 backdrop-blur-sm shadow-lg"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-4">
+        {/* Logo */}
         <Link
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img
-            src="/frontend/src/assets/Kaizen.png"
-            className="h-8 hover:scale-105 transition-transform"
-            alt="Kaizen Logo"
-          />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
+          <span
+            className="self-center text-2xl md:text-3xl font-bold whitespace-nowrap text-transparent 
+                         bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
+          >
+            Kaizen
+          </span>
         </Link>
 
+        {/* Mobile menu button */}
         <button
-          onClick={toggleMenu} // Toggle function added here
+          onClick={toggleMenu}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:focus:ring-gray-600 transition-colors"
-          aria-controls="navbar-default"
-          aria-expanded={isMenuOpen} // Accessibility
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white 
+                   rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 
+                   focus:ring-purple-500"
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -49,51 +76,44 @@ function Navbar() {
           </svg>
         </button>
 
+        {/* Navigation menu */}
         <div
           className={`${
             isMenuOpen ? "block" : "hidden"
           } w-full md:block md:w-auto`}
           id="navbar-default"
         >
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0">
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
-                aria-current="page"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/about"
-                className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
-              >
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/team"
-                className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
-              >
-                Team
-              </Link>
-            </li>
+          <ul
+            className="font-medium flex flex-col p-4 md:p-0 mt-4 md:flex-row md:items-center 
+                       md:space-x-8 md:mt-0 md:border-0"
+          >
+            {navigationItems.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block py-2 px-3 md:p-0 text-white hover:text-transparent 
+                           hover:bg-clip-text hover:bg-gradient-to-r from-purple-400 to-pink-400 
+                           transition-all duration-300 ${
+                             location.pathname === item.path
+                               ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
+                               : ""
+                           }`}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
             <li>
               <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text- px-2 py-1 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 hover:text-black cursor-pointer"
+                onClick={() => {
+                  navigate("/login");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full md:w-auto px-6 py-2 text-sm font-semibold rounded-full 
+                         bg-gradient-to-r from-purple-500 to-indigo-600 text-white 
+                         hover:shadow-lg hover:shadow-purple-500/50 transform 
+                         hover:scale-105 transition-all duration-300"
               >
                 Login
               </button>
